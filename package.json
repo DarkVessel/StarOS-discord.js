@@ -1,0 +1,31 @@
+{
+  "name": "staros-bot",
+  "version": "1.2",
+  "description": "Бот который вам будет помогать вставлять нужные реакции на сообщения и будет выдавать приветствие на нужный канал. Бот StarOS, вам в этом поможет, можете сами отредактировать приветствие( первоначальное приветствие -\"User пришёл :)\" ).У этого бота мало функций, но для новичков может помощь! Пользуйтесь ;)",
+  "main": "bot.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarkVessel/StarOS-discord.js.git"
+  },
+  "keywords": [
+    "Node.JS",
+    "JavaScript",
+    "discord.js",
+    "bot",
+    "Discord",
+    "StarOS"
+  ],
+  "author": "DarkVessel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DarkVessel/StarOS-discord.js/issues"
+  },
+  "homepage": "https://github.com/DarkVessel/StarOS-discord.js#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.1.0"
+  }
+}
