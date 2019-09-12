@@ -1,9 +1,49 @@
+const http = require('http'),
+    express = require('express'),
+    app = express();
+
+app.get("/", (request, response) => {
+    console.log(Date.now() + " пинг получен");
+    response.sendStatus(200);
+});
+
+app.listen(process.env.PORT);
+setInterval(() => {
+    http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 280000);
 const { Discord, RichEmbed, Client} = require('discord.js')
 const fs = require('fs')
 const bot = new Client()
-const env = require('dotenv').config();
 const lang = require('./lang.json')
 const time = require('./time.json')
+bot.commands = new Map();
+fs.readdir('./cmds/', (err, files) => {
+    if (err) return console.error(err);
+
+    let jsfiles = files.filter(f => f.split('.').pop() === 'js');
+
+    if (jsfiles.length < 1) return;
+
+    console.log('\nCommands:');
+
+    jsfiles.forEach(f => {
+        let prop = require(`./cmds/${f}`);
+
+        bot.commands.set(prop.help.name, prop);
+
+        console.log(`${f.split('.').shift()}.js загружен!`);
+    });
+});
+bot.on('message', async message => {
+    let messageArray = message.content.split(" ");
+    let command = messageArray[0].toLowerCase();
+    let args = messageArray.slice(1);
+    if (!message.content.startsWith("/")) return;
+    let cmd = bot.commands.get(command.slice("/".length));
+    if (cmd) cmd.run(bot, message, args);
+    bot.rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    bot.uId = message.author.id;
+});
 bot.on('ready', async () => {
     console.log(`StarOS BOT | v1.0`);
     console.info(`Подключён к аккаунту ${bot.user.tag} | ${bot.user.id}`)
@@ -170,4 +210,4 @@ bot.on('message', async message => {
     await message.react('615151421117169664')
   } else return
 })
-bot.login(process.env.TOKEN)
+bot.login(process.env.TOKEN);
