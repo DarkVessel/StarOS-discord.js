@@ -1,6 +1,10 @@
 exports.run = (bot, message, args) => {
     const Discord = require('discord.js')
     const fs = require('fs')
+    const env = require('dotenv').config();
+    const { host, user, password, database } = process.env;
+    const mysql = require('mysql2')
+    const con = mysql.createConnection({ host, user, password, database});
     if(message.author.id !== '517331770656686080') return message.channel.send(`Выполнять данную команду может только создатель бота!`)
     function clean(text) {
         if(typeof(text) === 'string')
@@ -27,6 +31,6 @@ exports.run = (bot, message, args) => {
     message.channel.send(embed1)
 }
 }
-exports.help = {
+exports.command = {
     name: 'eval'
 }

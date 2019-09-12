@@ -14,32 +14,23 @@ setInterval(() => {
 const { Discord, RichEmbed, Client} = require('discord.js')
 const fs = require('fs')
 const bot = new Client()
-const lang = require('./lang.json')
 const time = require('./time.json')
-bot.commands = new Map();
-fs.readdir('./cmds/', (err, files) => {
-    if (err) return console.error(err);
-
-    let jsfiles = files.filter(f => f.split('.').pop() === 'js');
-
-    if (jsfiles.length < 1) return;
-
-    console.log('\nCommands:');
-
-    jsfiles.forEach(f => {
-        let prop = require(`./cmds/${f}`);
-
-        bot.commands.set(prop.help.name, prop);
-
-        console.log(`${f.split('.').shift()}.js загружен!`);
-    });
-});
+const commands = new Map();
+const env = require('dotenv').config();
+const { host, user, password, database } = process.env;
+const mysql = require('mysql2')
+const con = mysql.createConnection({ host, user, password, database});
+fs.readdirSync('./cmds/').filter(file => file.endsWith('.js')).forEach(file => {
+    let props = require(`./cmds/${file}`);
+    commands.set(require(`./cmds/${file}`).command.name, require(`./cmds/${file}`));
+    console.log(`[COMMANDS] Загружен ${file}!`);
+})
 bot.on('message', async message => {
     let messageArray = message.content.split(" ");
     let command = messageArray[0].toLowerCase();
     let args = messageArray.slice(1);
     if (!message.content.startsWith("/")) return;
-    let cmd = bot.commands.get(command.slice("/".length));
+    let cmd = commands.get(command.slice("/".length));
     if (cmd) cmd.run(bot, message, args);
     bot.rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     bot.uId = message.author.id;
@@ -161,16 +152,6 @@ bot.on('guildMemberAdd', async member => {
                 d.stop()
                 z.stop()
             })
-            if(!lang[member.id]) lang[member.id] = { ru: false }
-            if(!lang[member.id]) lang[member.id] = { en: false }
-            fs.writeFile('./lang.json', JSON.stringify(lang), (err) => {
-                if (err) console.log(err);
-              });
-            lang[member.id].ru = true
-            lang[member.id].en = false
-            fs.writeFile('./lang.json', JSON.stringify(lang), (err) => {
-                if (err) console.log(err);
-              });
                })
         z.on('collect', r => {
           bot.channels.get('615891476446183456').send(`${member} Has come 😃`)
@@ -183,31 +164,192 @@ bot.on('guildMemberAdd', async member => {
                 d.stop()
                 z.stop()
             })
-            if(!lang[member.id]) lang[member.id] = { ru: false }
-            if(!lang[member.id]) lang[member.id] = { en: false }
-            fs.writeFile('./lang.json', JSON.stringify(lang), (err) => {
-                if (err) console.log(err);
-              });
-            lang[member.id].ru = false
-            lang[member.id].en = true
-            fs.writeFile('./lang.json', JSON.stringify(lang), (err) => {
-                if (err) console.log(err);
-              });
             })
       })
     })
 })
-bot.on('guildMemberRemove', async member => {
-  if(!lang[member.id]) return
-delete lang[member.id]
-fs.writeFile('./lang.json', JSON.stringify(lang), (err) => {
-    if (err) console.log(err);
-  });
-})
+
 bot.on('message', async message => {
   if(message.channel.id === '615595315524796436') {
     await message.react('615151311796830208')
     await message.react('615151421117169664')
   } else return
+})
+bot.on('message', async message => {
+    if (message.author.bot) return
+    if (message.channel.type == "dm") return;
+    if(message.channel.id !== '621708866648014848') return
+    let addxp = Math.floor(Math.random() * 3) + 1
+    con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
+        if (result.length) return;
+        con.query("INSERT INTO Levels (ID, Level, Xp, Maxs) VALUES  (?,?,?,?)", [message.author.id, 0, 0, 700], function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+        });
+    })
+    con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, results) {
+        if (err) console.log(err);
+        const users = results;
+        for (let i = 0; i < users.length; i++) {
+            let level = users[i].Maxs
+            let CurrentLevel = users[i].Level
+            let CurrentXp = users[i].Xp
+            if(CurrentLevel === 65) return
+            if(CurrentLevel > 65) return
+            con.query(`UPDATE Levels SET Xp = ${parseInt(CurrentXp) + parseInt(addxp)} WHERE ID = ${message.author.id}`, function (err, rows) {
+                if (err) return console.log(err);
+            });
+            if(`${CurrentLevel + 1}` > 5) {
+              let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 10) {
+              let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 15) {
+              let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 20) {
+              let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 25) {
+              let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 30) {
+              let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 35) {
+              let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 40) {
+              let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if(`${CurrentLevel + 1}` > 50) {
+              let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+              if(!roleS) {
+                message.member.addRole(roleS)
+              }
+            }
+            if (level < CurrentXp) {
+              if(CurrentLevel === 25) {
+                if(level === 900) return
+                con.query(`UPDATE Levels SET Maxs = 900 WHERE ID = ${message.author.id}`, function (err, rows) {
+                    if (err) return console.log(err);
+                });
+              }
+              if(CurrentLevel === 40) {
+                if(level === 1250) return
+                con.query(`UPDATE Levels SET Maxs = 1250 WHERE ID = ${message.author.id}`, function (err, rows) {
+                      if (err) return console.log(err);
+                });
+              }
+                con.query(`UPDATE Levels SET Level = ${parseInt(CurrentLevel) + parseInt(1)}, Xp = 0 WHERE ID = ${message.author.id}`, function (err, rows) {
+                    if (err) return console.log(err);
+                });
+                if(`${CurrentLevel + 1}` == 5) {
+                  let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 10) {
+                  let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 15) {
+                  let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 20) {
+                  let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 25) {
+                  let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 30) {
+                  let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 35) {
+                  let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 40) {
+                  let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 50) {
+                  let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                if(`${CurrentLevel + 1}` == 65) {
+                  let roleS = message.guild.roles.find(r => r.id === '621732521566273546');
+                  if(!roleS) {
+                    message.member.addRole(roleS)
+                  }
+                }
+                let languageRU = message.guild.roles.find(r => r.id === '615518783620251670');
+                let languageEN = message.guild.roles.find(r => r.id === '615867385328697349');
+                if(!languageRU) {
+                  if(!languageEN) {
+                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    return
+                  }
+                  bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                  return
+                }
+                if(!languageEN) {
+                  if(!languageRU) {
+                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    return
+                  }
+                  bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                  return
+                }
+            }
+        }
+    })
 })
 bot.login(process.env.TOKEN);
