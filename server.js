@@ -178,7 +178,7 @@ bot.on('message', async message => {
 bot.on('message', async message => {
     if (message.author.bot) return
     if (message.channel.type == "dm") return;
-    if(message.channel.id !== '621708866648014848') return
+    if(message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658') return
     let addxp = Math.floor(Math.random() * 3) + 1
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
