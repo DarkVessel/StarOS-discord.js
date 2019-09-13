@@ -277,7 +277,7 @@ bot.on('message', async message => {
                 }
                 if(`${CurrentLevel + 1}` == 10) {
                   let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
-                  if(!ssage.member.roles.has(roleS.id)) {
+                  if(!message.member.roles.has(roleS.id)) {
                    message.member.addRole(roleS)
                   }
                 }
