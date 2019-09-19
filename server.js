@@ -178,8 +178,7 @@ bot.on('message', async message => {
 bot.on("message", async message => {
       if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
   if (message.author.bot) return
-    if (message.channel.type == "dm") return;
-    if(message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658') return
+    if (message.channel.type == "dm") return; 
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
         con.query("INSERT INTO Levels (ID, Level, Xp, Maxs) VALUES  (?,?,?,?)", [message.author.id, 0, 0, 700], function (err, result) {
@@ -370,7 +369,7 @@ bot.on('message', async message => {
     if(message.author.id === '517331770656686080' && message.author.id === '550276764463792129' && message.author.id === '571672504721211392' && message.author.id === '601265391519662080' && message.author.id === '599187428145627147' && message.author.id === '575013947258699787' && message.author.id === '344834720401719296') return
     if (message.author.bot) return
     if (message.channel.type == "dm") return;
-    if(message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658') return
+      if(message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '617417581434765363') return
     let addxp = Math.floor(Math.random() * 3) + 1
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
@@ -546,6 +545,7 @@ bot.on('message', async message => {
                   return
                 }
                       bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                return
               }
               if(message.member.roles.has(languageEN.id)) {
                 if(message.member.roles.has(languageRU.id)) {
@@ -553,6 +553,7 @@ bot.on('message', async message => {
                   return
                 }
                                   bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                return
               }
             }
         }
