@@ -176,9 +176,10 @@ bot.on('message', async message => {
   } else return
 })
 bot.on("message", async message => {
-      if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
-  if (message.author.bot) return
+    if (message.author.bot) return
     if (message.channel.type == "dm") return; 
+      if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
+  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
         con.query("INSERT INTO Levels (ID, Level, Xp, Maxs) VALUES  (?,?,?,?)", [message.author.id, 0, 0, 700], function (err, result) {
@@ -254,6 +255,9 @@ bot.on("message", async message => {
               }
             }
             if (level < CurrentXp) {
+                              con.query(`UPDATE Levels SET Level = ${parseInt(CurrentLevel) + parseInt(1)}, Xp = 0 WHERE ID = ${message.author.id}`, function (err, rows) {
+                    if (err) return console.log(err);
+                });
               if(CurrentLevel === 25) {
                 if(level === 900) return
                 con.query(`UPDATE Levels SET Maxs = 900 WHERE ID = ${message.author.id}`, function (err, rows) {
@@ -266,9 +270,6 @@ bot.on("message", async message => {
                       if (err) return console.log(err);
                 });
               }
-                con.query(`UPDATE Levels SET Level = ${parseInt(CurrentLevel) + parseInt(1)}, Xp = 0 WHERE ID = ${message.author.id}`, function (err, rows) {
-                    if (err) return console.log(err);
-                });
                 if(`${CurrentLevel + 1}` === 5) {
                   let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
                   if(message.member.roles.has(roleS.id)) return
@@ -328,7 +329,6 @@ bot.on("message", async message => {
                     message.member.addRole(roleS)
                   }
                 }
- 
               let languageRU = message.guild.roles.find(r => r.id === '615518783620251670');
                 let languageEN = message.guild.roles.find(r => r.id === '615867385328697349');
                 if(!message.member.roles.has(languageRU.id)) {
@@ -353,6 +353,7 @@ bot.on("message", async message => {
                   return
                 }
                       bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                return
               }
               if(message.member.roles.has(languageEN.id)) {
                 if(message.member.roles.has(languageRU.id)) {
@@ -360,16 +361,17 @@ bot.on("message", async message => {
                   return
                 }
                                   bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                return
               }
             }
         }
     })
 })
 bot.on('message', async message => {
-    if(message.author.id === '517331770656686080' && message.author.id === '550276764463792129' && message.author.id === '571672504721211392' && message.author.id === '601265391519662080' && message.author.id === '599187428145627147' && message.author.id === '575013947258699787' && message.author.id === '344834720401719296') return
     if (message.author.bot) return
-    if (message.channel.type == "dm") return;
-      if(message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '621725124567236658' && message.channel.id === '617417581434765363') return
+    if (message.channel.type == "dm") return; 
+  if(['517331770656686080', '550276764463792129', '571672504721211392', '601265391519662080', '599187428145627147', '575013947258699787', '344834720401719296'].includes(message.author.id)) return;
+  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
     let addxp = Math.floor(Math.random() * 3) + 1
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
@@ -446,6 +448,7 @@ bot.on('message', async message => {
               }
             }
             if (level < CurrentXp) {
+                        
               if(CurrentLevel === 25) {
                 if(level === 900) return
                 con.query(`UPDATE Levels SET Maxs = 900 WHERE ID = ${message.author.id}`, function (err, rows) {
@@ -520,7 +523,6 @@ bot.on('message', async message => {
                     message.member.addRole(roleS)
                   }
                 }
- 
               let languageRU = message.guild.roles.find(r => r.id === '615518783620251670');
                 let languageEN = message.guild.roles.find(r => r.id === '615867385328697349');
                 if(!message.member.roles.has(languageRU.id)) {
@@ -553,7 +555,6 @@ bot.on('message', async message => {
                   return
                 }
                                   bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
-                return
               }
             }
         }

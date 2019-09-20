@@ -4,7 +4,13 @@ const { host, user, password, database } = process.env;
 const mysql = require('mysql2')
 const con = mysql.createConnection({ host, user, password, database});
 module.exports.run = async (bot, message, args) => {
-    let member = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[1]) || message.guild.member(message.author))
+    const member = message.guild.member(
+  message.mentions.users.first()
+    ||
+  message.guild.members.get(args[0])
+|| 
+      message.author
+);
     con.query(`SELECT * FROM Levels WHERE ID = ${member.id}`, function (err, result) {
         if (result.length) return;
         con.query("INSERT INTO Levels (ID, level, xp, Maxs) VALUES  (?,?,?,?)", [member.id, 0, 0, 700], function (err, result) {
