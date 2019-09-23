@@ -11,29 +11,29 @@ app.listen(process.env.PORT);
 setInterval(() => {
     http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
 }, 280000);
-const { Discord, RichEmbed, Client} = require('discord.js')
-const fs = require('fs')
-const bot = new Client()
+const { Discord, RichEmbed, Client} = require('discord.js') //Модуль для работы с API дискорда.
+const fs = require('fs') //Файловая Система.
+const bot = new Client() //Наш бот.
 const time = require('./time.json')
-const commands = new Map();
-const env = require('dotenv').config();
-const { host, user, password, database } = process.env;
-const mysql = require('mysql2')
-const con = mysql.createConnection({ host, user, password, database});
-fs.readdirSync('./cmds/').filter(file => file.endsWith('.js')).forEach(file => {
+const commands = new Map(); //Команды.
+const env = require('dotenv').config(); //Модуль для работы с .env файлами.
+const { host, user, password, database } = process.env; //Вытаскиваем значения "host", "user", "password", "database" из файла .env
+const mysql = require('mysql2') //Модуль для работы с базой MySQL
+const con = mysql.createConnection({ host, user, password, database}); //Подключаемся к базе.
+const config = require('./botconfig.json') //Путь к файлу "botconfig.json"
+const { prefix, serverID, botOwnerID, ChannelWelcomeID, ChannelReactionID, react1, react2, RoleRuID, RoleEnID, MaxLevel, ChannelLevelID, RoleLevel5ID, RoleLevel10ID, RoleLevel15ID, RoleLevel20ID, RoleLevel25ID, RoleLevel30ID, RoleLevel35ID, RoleLevel40ID, RoleLevel50ID, RoleLevel65ID } = config //Вытаскиваем значения из "botconfig.json"
+fs.readdirSync('./cmds/').filter(file => file.endsWith('.js')).forEach(file => { //Загрузчик команд.
     let props = require(`./cmds/${file}`);
     commands.set(require(`./cmds/${file}`).command.name, require(`./cmds/${file}`));
     console.log(`[COMMANDS] Загружен ${file}!`);
 })
-bot.on('message', async message => {
+bot.on('message', async message => { //Обработчик команд.
     let messageArray = message.content.split(" ");
     let command = messageArray[0].toLowerCase();
     let args = messageArray.slice(1);
-    if (!message.content.startsWith("/")) return;
-    let cmd = commands.get(command.slice("/".length));
+    if (!message.content.startsWith(prefix)) return;
+    let cmd = commands.get(command.slice(prefix.length));
     if (cmd) cmd.run(bot, message, args);
-    bot.rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    bot.uId = message.author.id;
 });
 bot.on('ready', async () => {
     console.log(`StarOS BOT | v1.0`);
@@ -43,7 +43,6 @@ bot.on('ready', async () => {
     });
    bot.setInterval(() => {
       var os = require('os');
-
       function ostype() {
           var sysName = os.type();
           return (sysName === "Linux") ? "Linux" :
@@ -51,7 +50,6 @@ bot.on('ready', async () => {
                   (sysName === "Windows_NT") ? "Windows" :
                       `Неизвестная (${os.platform()})`;
       }
-
       function formatSize(length) {
           var i = 0, type = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб'];
           while ((length / 1000 | 0) && i < type.length - 1) {
@@ -60,7 +58,6 @@ bot.on('ready', async () => {
           }
           return length.toFixed(2) + ' ' + type[i];
       }
-
       function getNormalCount(number, one, two, five) {
           number = Math.abs(number);
           number %= 100;
@@ -76,11 +73,10 @@ bot.on('ready', async () => {
           }
           return five;
       }
-
       var sec = os.uptime();
       var min = sec / 60;
       var hour = min / 60;
-
+     
       var normalDay = `${Math.floor(hour / 24)} ${getNormalCount(Math.floor(hour / 24), "день", "дня", "дней")}`;
       var normalHour = `${Math.floor(hour % 24)} ${getNormalCount(Math.floor(hour % 24), "час", "часа", "часов")}`;
       var normalMinutes = `${Math.floor(min % 60)} ${getNormalCount(Math.floor(min % 60), "минута", "минуты", "минут")}`;
@@ -94,7 +90,7 @@ bot.on('ready', async () => {
       module.exports.getOSUptime = sysuptime;
       var Сообщений = time.message
       const verifilv = ['Отсутствует.', 'Низкая.', 'Средняя.', 'Высокая.', 'Очень высокая.']
-      bot.guilds.get(`578530834806734849`).members.forEach(member => {
+      bot.guilds.get(serverID).members.forEach(member => {
           let fsd = parseInt(Date.now() + (60 * 1000))
           let time2 = time.status
           if (Date.now() >= time2) {
@@ -119,10 +115,10 @@ bot.on('ready', async () => {
 })
 bot.on('message', async message => {
   if(message.content === '!test') {
-    if(message.author.id !== '517331770656686080') return
+    if(message.author.id !== botOwnerID) return
     let fsd = parseInt(Date.now() + (60 * 1000))
     time.status = fsd
-    time.message = '???'
+    time.message = 0
     fs.writeFile('./time.json', JSON.stringify(time), (err) => {
         if (err) console.log(err);
     });
@@ -133,34 +129,34 @@ bot.on('message', async message => {
       if (err) console.log(err);
   });
 })
-bot.on('guildMemberAdd', async member => {
-  member.send('Нажмите ❤ если вы Русский.\nPress 💛 if you are English.').then(msg => {
-      msg.react('❤').then(r => {
+bot.on('guildMemberAdd', async member => { //При входе участника на сервер.
+  member.send('Нажмите ❤ если вы Русский.\nPress 💛 if you are English.').then(msg => { //Ставим реакции на это сообщение.
+      msg.react('❤').then(r => { 
         msg.react('💛')
         const a = (reaction, user) => reaction.emoji.name === '❤' && user.id === member.id;
         const b = (reaction, user) => reaction.emoji.name === '💛' && user.id === member.id;
-        const d = msg.createReactionCollector(a);
+        const d = msg.createReactionCollector(a); //Создаём коллектор.
         const z = msg.createReactionCollector(b);
         d.on('collect', r => {
-          bot.channels.get('615891476446183456').send(`${member} Пришёл 😃`)
-            let roleS = member.guild.roles.find(r => r.id === '615518783620251670');
+          bot.channels.get(ChannelWelcomeID).send(`${member} Пришёл 😃`)
+            let roleS = member.guild.roles.find(r => r.id === RoleRuID);
             if (!member.roles.has(roleS.id)) {
                 member.addRole(roleS);
             }
             msg.edit('❤ | Вы успешно указали свой язык!').then(msg => {
               msg.reactions.forEach(e => e.remove(bot.user.id))
                 d.stop()
-                z.stop()
+                z.stop() //Останавливаем коллекторы.
             })
                })
         z.on('collect', r => {
-          bot.channels.get('615891476446183456').send(`${member} Has come 😃`)
-            let roleS = member.guild.roles.find(r => r.id === '615867385328697349');
+          bot.channels.get(ChannelWelcomeID).send(`${member} Has come 😃`)
+            let roleS = member.guild.roles.find(r => r.id === RoleEnID); 
             if (!member.roles.has(roleS.id)) {
-                member.addRole(roleS);
+                member.addRole(roleS); //Выдаём роль.
             }
             msg.edit("💛 | You have successfully entered your language!").then(msg => {
-                msg.reactions.forEach(e => e.remove(bot.user.id))
+                msg.reactions.forEach(e => e.remove(bot.user.id)) //Убираем реакции у бота.
                 d.stop()
                 z.stop()
             })
@@ -169,17 +165,18 @@ bot.on('guildMemberAdd', async member => {
     })
 })
 
-bot.on('message', async message => {
-  if(message.channel.id === '615595315524796436') {
-    await message.react('615151311796830208')
-    await message.react('615151421117169664')
+bot.on('message', async message => { 
+  if(message.channel.id === ChannelReactionID) {
+    await message.react(react1) //Ставим реакции.
+    await message.react(react2)
   } else return
 })
 bot.on("message", async message => {
     if (message.author.bot) return
     if (message.channel.type == "dm") return; 
+    if(message.guild.id !== serverID) return
       if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
-  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
+  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return; //В каких каналах вы не сможете получать уровень.
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
         con.query("INSERT INTO Levels (ID, Level, Xp, Maxs) VALUES  (?,?,?,?)", [message.author.id, 0, 0, 700], function (err, result) {
@@ -195,67 +192,67 @@ bot.on("message", async message => {
             let level = users[i].Maxs
             let CurrentLevel = users[i].Level
             let CurrentXp = users[i].Xp
-            if(CurrentLevel === 65) return
-            if(CurrentLevel > 65) return
+            if(CurrentLevel === MaxLevel) return
+            if(CurrentLevel > MaxLevel) return
             con.query(`UPDATE Levels SET Xp = ${parseInt(CurrentXp) + parseInt(4)} WHERE ID = ${message.author.id}`, function (err, rows) {
                 if (err) return console.log(err);
             });
             if(`${CurrentLevel + 1}` > 5) {
-              let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID); 
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 10) {
-              let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 15) {
-              let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 20) {
-              let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 25) {
-              let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 30) {
-              let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 35) {
-              let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 40) {
-              let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 50) {
-              let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if (level < CurrentXp) {
-                              con.query(`UPDATE Levels SET Level = ${parseInt(CurrentLevel) + parseInt(1)}, Xp = 0 WHERE ID = ${message.author.id}`, function (err, rows) {
+                con.query(`UPDATE Levels SET Level = ${parseInt(CurrentLevel) + parseInt(1)}, Xp = 0 WHERE ID = ${message.author.id}`, function (err, rows) {
                     if (err) return console.log(err);
                 });
               if(CurrentLevel === 25) {
@@ -271,96 +268,96 @@ bot.on("message", async message => {
                 });
               }
                 if(`${CurrentLevel + 1}` === 5) {
-                  let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
                   if(message.member.roles.has(roleS.id)) return
                     message.member.addRole(roleS)
                 }
                 if(`${CurrentLevel + 1}` == 10) {
-                  let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
                   if(!message.member.roles.has(roleS.id)) {
                    message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 15) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
                   if(!message.member.roles.has(roleS.id)){
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 20) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 25) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 30) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 35) {
-                  let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 40) {
-                  let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 50) {
-                  let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 65) {
-                  let roleS = message.guild.roles.find(r => r.id === '621732521566273546');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
-              let languageRU = message.guild.roles.find(r => r.id === '615518783620251670');
-                let languageEN = message.guild.roles.find(r => r.id === '615867385328697349');
+              let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
+                let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
                 if(!message.member.roles.has(languageRU.id)) {
                   if(!message.member.roles.has(languageEN.id)) {
-                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                     return
                   }
-                  bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
                 if(!message.member.roles.has(languageEN.id)) {
                   if(!message.member.roles.has(languageRU.id)) {
-                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                     return
                   }
-                  bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                  bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                   return
                 }
               if(message.member.roles.has(languageRU.id)) {
                 if(message.member.roles.has(languageEN.id)) {
-                  bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                  bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
-                      bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                      bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                 return
               }
               if(message.member.roles.has(languageEN.id)) {
                 if(message.member.roles.has(languageRU.id)) {
-                bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
-                                  bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
                 return
               }
             }
@@ -370,6 +367,7 @@ bot.on("message", async message => {
 bot.on('message', async message => {
     if (message.author.bot) return
     if (message.channel.type == "dm") return; 
+    if(message.guild.id !== serverID) return
   if(['517331770656686080', '550276764463792129', '571672504721211392', '601265391519662080', '599187428145627147', '575013947258699787', '344834720401719296'].includes(message.author.id)) return;
   if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
     let addxp = Math.floor(Math.random() * 3) + 1
@@ -394,61 +392,60 @@ bot.on('message', async message => {
                 if (err) return console.log(err);
             });
             if(`${CurrentLevel + 1}` > 5) {
-              let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 10) {
-              let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 15) {
-              let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 20) {
-              let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 25) {
-              let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 30) {
-              let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 35) {
-              let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
               if(!message.member.roles.has(roleS.id)){
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 40) {
-              let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if(`${CurrentLevel + 1}` > 50) {
-              let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
             }
             if (level < CurrentXp) {
-                        
               if(CurrentLevel === 25) {
                 if(level === 900) return
                 con.query(`UPDATE Levels SET Maxs = 900 WHERE ID = ${message.author.id}`, function (err, rows) {
@@ -465,96 +462,96 @@ bot.on('message', async message => {
                     if (err) return console.log(err);
                 });
                 if(`${CurrentLevel + 1}` === 5) {
-                  let roleS = message.guild.roles.find(r => r.id === '621704078057013278');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
                   if(message.member.roles.has(roleS.id)) return
                     message.member.addRole(roleS)
                 }
                 if(`${CurrentLevel + 1}` == 10) {
-                  let roleS = message.guild.roles.find(r => r.id === '621706860650823701');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
                   if(!message.member.roles.has(roleS.id)) {
                    message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 15) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707244509069313');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
                   if(!message.member.roles.has(roleS.id)){
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 20) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707424801357825');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 25) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707728284286984');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 30) {
-                  let roleS = message.guild.roles.find(r => r.id === '621707979896651809');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 35) {
-                  let roleS = message.guild.roles.find(r => r.id === '603629259080335391');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 40) {
-                  let roleS = message.guild.roles.find(r => r.id === '621714396955017236');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 50) {
-                  let roleS = message.guild.roles.find(r => r.id === '621714949567414302');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
                 if(`${CurrentLevel + 1}` == 65) {
-                  let roleS = message.guild.roles.find(r => r.id === '621732521566273546');
+                  let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
                   if(!message.member.roles.has(roleS.id)) {
                     message.member.addRole(roleS)
                   }
                 }
-              let languageRU = message.guild.roles.find(r => r.id === '615518783620251670');
-                let languageEN = message.guild.roles.find(r => r.id === '615867385328697349');
+              let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
+                let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
                 if(!message.member.roles.has(languageRU.id)) {
                   if(!message.member.roles.has(languageEN.id)) {
-                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                     return
                   }
-                  bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
                 if(!message.member.roles.has(languageEN.id)) {
                   if(!message.member.roles.has(languageRU.id)) {
-                    bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                     return
                   }
-                  bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                  bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                   return
                 }
               if(message.member.roles.has(languageRU.id)) {
                 if(message.member.roles.has(languageEN.id)) {
-                  bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                  bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
-                      bot.channels.get("621724743992868908").send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                      bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                 return
               }
               if(message.member.roles.has(languageEN.id)) {
                 if(message.member.roles.has(languageRU.id)) {
-                bot.channels.get("621724743992868908").send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
                   return
                 }
-                                  bot.channels.get("621724743992868908").send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
               }
             }
         }
