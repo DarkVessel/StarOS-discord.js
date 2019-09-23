@@ -3,6 +3,8 @@ const env = require('dotenv').config();
 const { host, user, password, database } = process.env;
 const mysql = require('mysql2')
 const con = mysql.createConnection({ host, user, password, database});
+const config = require('../botconfig.json')
+const { colors } = config
 module.exports.run = async (bot, message, args) => {
     const member = message.guild.member(
   message.mentions.users.first()
@@ -31,7 +33,7 @@ module.exports.run = async (bot, message, args) => {
     .setAuthor(`${member.user.username}`, member.user.avatarURL)
     .addField('Опыт', `${CurrentXp}/${level}`, true)
     .addField('Уровень', CurrentLevel, true)
-    .setColor('RANDOM')
+    .setColor(colors)
     .setTimestamp()
     .setFooter(`Опыта до следующего уровня: ${level - CurrentXp}`)
     message.channel.send(embed)
