@@ -21,7 +21,7 @@ const { host, user, password, database } = process.env; //Вытаскиваем
 const mysql = require('mysql2') //Модуль для работы с базой MySQL
 const con = mysql.createConnection({ host, user, password, database}); //Подключаемся к базе.
 const config = require('./botconfig.json') //Путь к файлу "botconfig.json"
-const { prefix, serverID, botOwnerID, ChannelWelcomeID, ChannelReactionID, react1, react2, RoleRuID, RoleEnID, MaxLevel, ChannelLevelID, RoleLevel5ID, RoleLevel10ID, RoleLevel15ID, RoleLevel20ID, RoleLevel25ID, RoleLevel30ID, RoleLevel35ID, RoleLevel40ID, RoleLevel50ID, RoleLevel65ID } = config //Вытаскиваем значения из "botconfig.json"
+const { prefix, serverID, botOwnerID, ChannelWelcomeID, ChannelReactionID, react1, react2, RoleRuID, RoleEnID, MaxLevel, ChannelLevelID, RoleLevel5ID, RoleLevel10ID, RoleLevel15ID, RoleLevel20ID, RoleLevel25ID, RoleLevel30ID, RoleLevel35ID, RoleLevel40ID, RoleLevel50ID, RoleLevel65ID, ChannelStatusID, MessageStatusID, RoleУкID } = config //Вытаскиваем значения из "botconfig.json"
 fs.readdirSync('./cmds/').filter(file => file.endsWith('.js')).forEach(file => { //Загрузчик команд.
     let props = require(`./cmds/${file}`);
     commands.set(require(`./cmds/${file}`).command.name, require(`./cmds/${file}`));
@@ -76,7 +76,7 @@ bot.on('ready', async () => {
       var sec = os.uptime();
       var min = sec / 60;
       var hour = min / 60;
-     
+
       var normalDay = `${Math.floor(hour / 24)} ${getNormalCount(Math.floor(hour / 24), "день", "дня", "дней")}`;
       var normalHour = `${Math.floor(hour % 24)} ${getNormalCount(Math.floor(hour % 24), "час", "часа", "часов")}`;
       var normalMinutes = `${Math.floor(min % 60)} ${getNormalCount(Math.floor(min % 60), "минута", "минуты", "минут")}`;
@@ -108,7 +108,7 @@ bot.on('ready', async () => {
                   .addField('<:love:615151311796830208> | **Статус каналов**', `> Голосовой онлайн: **${member.guild.members.filter(m => m.voiceChannel).size}**\n> Сообщений: **${Сообщений}**\n> Текстовых: **${member.guild.channels.filter(c => c.type == 'text').size}**\n> Голосовых: **${member.guild.channels.filter(c => c.type == 'voice').size}**`)
                   .addField('📺 | **Монитор Бота**', `User: ${os.hostname()}\nСистема: ${ostype()}\nЗадержка API: \`${Math.round(bot.ping)} мс\`\nАрхитектура системы: ${os.arch()}\nОЗУ: ${formatSize(os.totalmem() - os.freemem())}/${formatSize(os.totalmem())} (Свободно: ${formatSize(os.freemem())})\nАптайм системы: ${sysuptime}.`)
                   .setFooter('Статус обновиться через минуту...')
-              bot.channels.get("578535881145843717").fetchMessage('615891758441693194').then(m => m.edit(embed))
+              bot.channels.get(ChannelStatusID).fetchMessage(MessageStatusID).then(m => m.edit(embed))
           }
     }, 5000)
   })
@@ -130,13 +130,16 @@ bot.on('message', async message => {
   });
 })
 bot.on('guildMemberAdd', async member => { //При входе участника на сервер.
-  member.send('Нажмите ❤ если вы Русский.\nPress 💛 if you are English.').then(msg => { //Ставим реакции на это сообщение.
-      msg.react('❤').then(r => { 
+  member.send('Нажмите ❤ если вы Русский.\nPress 💛 if you are English.\nНатисніть 💚 якщо ви Українець.').then(msg => { //Ставим реакции на это сообщение.
+      msg.react('❤').then(r => {
         msg.react('💛')
+        msg.react('💚')
         const a = (reaction, user) => reaction.emoji.name === '❤' && user.id === member.id;
         const b = (reaction, user) => reaction.emoji.name === '💛' && user.id === member.id;
+        const g = (reaction, user) => reaction.emoji.name === '💚' && user.id === member.id;
         const d = msg.createReactionCollector(a); //Создаём коллектор.
         const z = msg.createReactionCollector(b);
+        const l = msg.createReactionCollector(g);
         d.on('collect', r => {
           bot.channels.get(ChannelWelcomeID).send(`${member} Пришёл 😃`)
             let roleS = member.guild.roles.find(r => r.id === RoleRuID);
@@ -151,7 +154,7 @@ bot.on('guildMemberAdd', async member => { //При входе участник�
                })
         z.on('collect', r => {
           bot.channels.get(ChannelWelcomeID).send(`${member} Has come 😃`)
-            let roleS = member.guild.roles.find(r => r.id === RoleEnID); 
+            let roleS = member.guild.roles.find(r => r.id === RoleEnID);
             if (!member.roles.has(roleS.id)) {
                 member.addRole(roleS); //Выдаём роль.
             }
@@ -161,11 +164,23 @@ bot.on('guildMemberAdd', async member => { //При входе участник�
                 z.stop()
             })
             })
+            l.on('collect', r => {
+              bot.channels.get(ChannelWelcomeID).send(`${member} Прийшов 😃`)
+              let roleS = member.guild.roles.find(r => r.id === RoleУкID);
+              if(!member.roles.has(roleS.id)) {
+                  member.addRole(roleS); //Выдаём роль.
+              }
+              msg.edit(`💚 | Ви успішно вказали свою мову!`).then(msg => {
+                msg.reactions.forEach(e => e.remove(bot.user.id)) //Убираем реакции у бота.
+                d.stop()
+                z.stop()
+              })
+            })
       })
     })
 })
 
-bot.on('message', async message => { 
+bot.on('message', async message => {
   if(message.channel.id === ChannelReactionID) {
     await message.react(react1) //Ставим реакции.
     await message.react(react2)
@@ -173,7 +188,7 @@ bot.on('message', async message => {
 })
 bot.on("message", async message => {
     if (message.author.bot) return
-    if (message.channel.type == "dm") return; 
+    if (message.channel.type == "dm") return;
     if(message.guild.id !== serverID) return
       if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
   if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return; //В каких каналах вы не сможете получать уровень.
@@ -198,7 +213,7 @@ bot.on("message", async message => {
                 if (err) return console.log(err);
             });
             if(`${CurrentLevel + 1}` > 5) {
-              let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID); 
+              let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
               if(!message.member.roles.has(roleS.id)) {
                 message.member.addRole(roleS)
               }
@@ -328,36 +343,17 @@ bot.on("message", async message => {
                 }
               let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
                 let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
-                if(!message.member.roles.has(languageRU.id)) {
-                  if(!message.member.roles.has(languageEN.id)) {
-                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                    return
-                  }
-                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
-                  return
-                }
-                if(!message.member.roles.has(languageEN.id)) {
-                  if(!message.member.roles.has(languageRU.id)) {
-                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                    return
-                  }
-                  bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
+                let languageУК = message.guild.roles.find(r => r.id === RoleУкID);
+                if(message.member.roles.has(RoleУкID.id)) {
+                        bot.channels.get(ChannelLevelID).send(`**${message.author} отримав ${CurrentLevel + 1} рівень!**`)
                   return
                 }
               if(message.member.roles.has(languageRU.id)) {
-                if(message.member.roles.has(languageEN.id)) {
-                  bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                  return
-                }
                       bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                 return
               }
               if(message.member.roles.has(languageEN.id)) {
-                if(message.member.roles.has(languageRU.id)) {
-                bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                  return
-                }
-                                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+              bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
                 return
               }
             }
@@ -366,7 +362,7 @@ bot.on("message", async message => {
 })
 bot.on('message', async message => {
     if (message.author.bot) return
-    if (message.channel.type == "dm") return; 
+    if (message.channel.type == "dm") return;
     if(message.guild.id !== serverID) return
   if(['517331770656686080', '550276764463792129', '571672504721211392', '601265391519662080', '599187428145627147', '575013947258699787', '344834720401719296'].includes(message.author.id)) return;
   if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
@@ -520,39 +516,21 @@ bot.on('message', async message => {
                     message.member.addRole(roleS)
                   }
                 }
-              let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
-                let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
-                if(!message.member.roles.has(languageRU.id)) {
-                  if(!message.member.roles.has(languageEN.id)) {
-                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
+                  let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
+                  let languageУК = message.guild.roles.find(r => r.id === RoleУкID);
+                  if(message.member.roles.has(RoleУкID.id)) {
+                          bot.channels.get(ChannelLevelID).send(`**${message.author} отримав ${CurrentLevel + 1} рівень!**`)
                     return
                   }
-                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
-                  return
-                }
-                if(!message.member.roles.has(languageEN.id)) {
-                  if(!message.member.roles.has(languageRU.id)) {
-                    bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                    return
-                  }
-                  bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
-                  return
-                }
-              if(message.member.roles.has(languageRU.id)) {
-                if(message.member.roles.has(languageEN.id)) {
-                  bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
-                  return
-                }
-                      bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
-                return
-              }
-              if(message.member.roles.has(languageEN.id)) {
                 if(message.member.roles.has(languageRU.id)) {
-                bot.channels.get(ChannelLevelID).send(`:flag_bg: | **${message.author} получил ${CurrentLevel + 1} уровень!**\n:flag_um: | **${message.author} got ${CurrentLevel + 1} level!**`)
+                        bot.channels.get(ChannelLevelID).send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`)
                   return
                 }
-                                  bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
-              }
+                if(message.member.roles.has(languageEN.id)) {
+                bot.channels.get(ChannelLevelID).send(`**${message.author} got ${CurrentLevel + 1} level!**`)
+                  return
+                }
             }
         }
     })
