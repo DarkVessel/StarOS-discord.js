@@ -8,6 +8,7 @@
   "react2": "615151421117169664",
   "RoleRuID": "615518783620251670",
   "RoleEnID": "615867385328697349",
+  "RoleУкID": "625682718662852608",
   "RoleLevel5ID": "621704078057013278",
   "RoleLevel10ID": "621706860650823701",
   "RoleLevel15ID": "621707244509069313",
@@ -20,5 +21,7 @@
   "RoleLevel65ID": "621732521566273546",
   "MaxLevel": "65",
   "ChannelLevelID": "621724743992868908",
-  "colors": "RANDOM"
+  "colors": "RANDOM",
+  "ChannelStatusID": "578535881145843717",
+  "MessageStatusID": "615891758441693194"
 }
