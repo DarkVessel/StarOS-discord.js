@@ -3,9 +3,10 @@ const { colors, ChannelStatusID } = require('../botconfig.json')
 module.exports.run = async (bot, message, args) => {
     try{
     let page = 1;
+    let Страниц = 8
     const embed = new RichEmbed()
         .setColor(colors)
-        .setFooter(`Страница ${page} из 7`)
+        .setFooter(`Страница ${page} из ${Страниц}`)
         .setDescription(`Добро пожаловать в справочник.\nИспользуйте ⏪ ⏩ для переключения по страницам.`)
         .setTimestamp()
     message.channel.send(embed).then(msg => {
@@ -22,7 +23,7 @@ module.exports.run = async (bot, message, args) => {
                 if (page == 1) {
                     let a = 'Добро пожаловать в справочник.\nИспользуйте ⏪ ⏩ для переключения по страницам.'
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -40,7 +41,7 @@ module.exports.run = async (bot, message, args) => {
                     - Есть статистика сервера и бота в одном сообщении. (обновляется каждую минуту)
                     - Уровни за общение.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`);
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -53,7 +54,7 @@ module.exports.run = async (bot, message, args) => {
                     Хост:
                     https://glitch.com/~staros-bot`
                     embed.setDescription(b);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -65,7 +66,7 @@ module.exports.run = async (bot, message, args) => {
                     Позволяет писать в консоль напрямую из Дискорда.
                     Доступна только создателю бота.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -76,7 +77,7 @@ module.exports.run = async (bot, message, args) => {
                     let a = `Команда \`/eval\`
                     Позволяет выполнить JavaScript код напрямую из канала. Доступна только создателю бота.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -88,18 +89,40 @@ module.exports.run = async (bot, message, args) => {
                     Позволяет просмотреть ранг у себя или у участника.
                     Пример: \`/rank @Участник\``
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
                         return
                     })
                 }
-                if (page == 7) {
+            if(page == 7) {
+                let a = `Команда \`/mute\`
+                Позволяет "заморозить" участника в канале путём выдачи специальной роли.
+                Команда доступна только тем у кого есть права на удаление сообщений или выдачи ролей.
+                Использование команды: \`/mute @УчастникИлиID Время Причина\`
+                Время или причину не обязательно указывать.
+                Времена:
+                \`1s\` - Секунды.
+                \`1m\` - Минуты.
+                \`1h\` - Часы.
+                \`1d\` - Дни.
+                \`1w\` - Недели.
+                \`1y\` - Годы.
+                Пример: \`/mute @УчастникИлиID 20m\` - Замутит участника на 20 минут.`
+                embed.setDescription(a);
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
+                    msg.edit(embed).then(msg => {
+                        msg.react('⏪')
+                        msg.react('⏩')
+                        return
+                })
+            }
+                              if (page == 8) {
                     let a = `Статистика сервера и бота.
                     В канале <#${ChannelStatusID}> есть она.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -109,12 +132,12 @@ module.exports.run = async (bot, message, args) => {
             })
             forwards.on('collect', r => {
               msg.reactions.forEach(e => e.remove(message.author.id))
-                if (page === 7) return;
+                if (page === Страниц) return;
                 page++;
                 if (page == 1) {
                     let a = 'Добро пожаловать в справочник.\nИспользуйте ⏪ ⏩ для переключения по страницам.'
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -132,7 +155,7 @@ module.exports.run = async (bot, message, args) => {
                     - Есть статистика сервера и бота в одном сообщении. (обновляется каждую минуту)
                     - Уровни за общение.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`);
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -145,7 +168,7 @@ module.exports.run = async (bot, message, args) => {
                     Хост:
                     https://glitch.com/~staros-bot`
                     embed.setDescription(b);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -157,7 +180,7 @@ module.exports.run = async (bot, message, args) => {
                     Позволяет писать в консоль напрямую из Дискорда.
                     Доступна только создателю бота.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -168,7 +191,7 @@ module.exports.run = async (bot, message, args) => {
                     let a = `Команда \`/eval\`
                     Позволяет выполнить JavaScript код напрямую из канала. Доступна только создателю бота.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
@@ -180,18 +203,40 @@ module.exports.run = async (bot, message, args) => {
                     Позволяет просмотреть ранг у себя или у участника.
                     Пример: \`/rank @Участник\``
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')
                         return
                     })
                 }
-                if (page == 7) {
+            if(page == 7) {
+                let a = `Команда \`/mute\`
+                Позволяет "заморозить" участника в канале путём выдачи специальной роли.
+                Команда доступна только тем у кого есть права на удаление сообщений или выдачи ролей.
+                Использование команды: \`/mute @УчастникИлиID Время Причина\`
+                Время или причину не обязательно указывать.
+                Времена:
+                \`1s\` - Секунды.
+                \`1m\` - Минуты.
+                \`1h\` - Часы.
+                \`1d\` - Дни.
+                \`1w\` - Недели.
+                \`1y\` - Годы.
+                Пример: \`/mute @УчастникИлиID 20m\` - Замутит участника на 20 минут.`
+                embed.setDescription(a);
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
+                    msg.edit(embed).then(msg => {
+                        msg.react('⏪')
+                        msg.react('⏩')
+                        return
+                })
+            }
+                              if (page == 8) {
                     let a = `Статистика сервера и бота.
                     В канале <#${ChannelStatusID}> есть она.`
                     embed.setDescription(a);
-                    embed.setFooter(`Страница ${page} из 7`)
+                    embed.setFooter(`Страница ${page} из ${Страниц}`)
                     msg.edit(embed).then(msg => {
                         msg.react('⏪')
                         msg.react('⏩')

@@ -22,6 +22,7 @@ const mysql = require('mysql2') //Модуль для работы с базой
 const con = mysql.createConnection({ host, user, password, database}); //Подключаемся к базе.
 const config = require('./botconfig.json') //Путь к файлу "botconfig.json"
 const { prefix, serverID, botOwnerID, ChannelWelcomeID, ChannelReactionID, react1, react2, RoleRuID, RoleEnID, MaxLevel, ChannelLevelID, RoleLevel5ID, RoleLevel10ID, RoleLevel15ID, RoleLevel20ID, RoleLevel25ID, RoleLevel30ID, RoleLevel35ID, RoleLevel40ID, RoleLevel50ID, RoleLevel65ID, ChannelStatusID, MessageStatusID, RoleУкID } = config //Вытаскиваем значения из "botconfig.json"
+const mutes = require('./mutes.json')
 fs.readdirSync('./cmds/').filter(file => file.endsWith('.js')).forEach(file => { //Загрузчик команд.
     let props = require(`./cmds/${file}`);
     commands.set(require(`./cmds/${file}`).command.name, require(`./cmds/${file}`));
@@ -112,6 +113,26 @@ bot.on('ready', async () => {
           }
     }, 5000)
   })
+  bot.setInterval(() => {
+        for (let i in mutes) {
+            let time = mutes[i].time;
+            let guildid = mutes[i].guild;
+            let guild = bot.guilds.get(guildid);
+            let member = guild.members.get(i);
+            let muteRole = member.guild.roles.find(r => r.name === "Muted");
+            if (!muteRole) continue;
+            if (!guildid) continue;
+            if (!guild) continue;
+            if (!member) continue;
+            if (Date.now() >= time) {
+                member.removeRole(muteRole);
+                delete mutes[i];
+                fs.writeFile('./mutes.json', JSON.stringify(mutes), (err) => {
+                    if (err) console.log(err);
+                });
+            }
+        }
+    }, 5000)
 })
 bot.on('message', async message => {
   if(message.content === '!test') {
@@ -191,7 +212,7 @@ bot.on("message", async message => {
     if (message.channel.type == "dm") return;
     if(message.guild.id !== serverID) return
       if(message.author.id !== '517331770656686080' && message.author.id !== '550276764463792129' && message.author.id !== '571672504721211392' && message.author.id !== '601265391519662080' && message.author.id !== '599187428145627147' && message.author.id !== '575013947258699787' && message.author.id !== '344834720401719296') return
-  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return; //В каких каналах вы не сможете получать уровень.
+  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436', '617417581434765363'].includes(message.channel.id)) return;
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;
         con.query("INSERT INTO Levels (ID, Level, Xp, Maxs) VALUES  (?,?,?,?)", [message.author.id, 0, 0, 700], function (err, result) {
@@ -209,9 +230,9 @@ bot.on("message", async message => {
             let CurrentXp = users[i].Xp
             if(CurrentLevel === MaxLevel) return
             if(CurrentLevel > MaxLevel) return
-            con.query(`UPDATE Levels SET Xp = ${parseInt(CurrentXp) + parseInt(4)} WHERE ID = ${message.author.id}`, function (err, rows) {
-                if (err) return console.log(err);
-            });
+              con.query(`UPDATE Levels SET Xp = ${parseInt(CurrentXp) + parseInt(4)} WHERE ID = ${message.author.id}`, function (err, rows) {
+                  if (err) return console.log(err);
+              });
             if(`${CurrentLevel + 1}` > 5) {
               let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
               if(!message.member.roles.has(roleS.id)) {
@@ -365,7 +386,7 @@ bot.on('message', async message => {
     if (message.channel.type == "dm") return;
     if(message.guild.id !== serverID) return
   if(['517331770656686080', '550276764463792129', '571672504721211392', '601265391519662080', '599187428145627147', '575013947258699787', '344834720401719296'].includes(message.author.id)) return;
-  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436'].includes(message.channel.id)) return;
+  if(['621725124567236658', '621725124567236658', '621725124567236658', '621725124567236658', '617417681657659436', '617417581434765363'].includes(message.channel.id)) return;
     let addxp = Math.floor(Math.random() * 3) + 1
     con.query(`SELECT * FROM Levels WHERE ID = ${message.author.id}`, function (err, result) {
         if (result.length) return;

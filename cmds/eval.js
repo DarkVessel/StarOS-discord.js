@@ -6,8 +6,8 @@ exports.run = (bot, message, args) => {
     const mysql = require('mysql2')
     const con = mysql.createConnection({ host, user, password, database});
     const config = require('../botconfig.json')
-    const { colors, ownerID } = config 
-    if(message.author.id !== ownerID) return message.channel.send(`Выполнять данную команду может только создатель бота!`)
+    const { colors, botOwnerID } = config 
+    if(message.author.id !== botOwnerID) return message.channel.send(`Выполнять данную команду может только создатель бота!`)
     function clean(text) {
         if(typeof(text) === 'string')
         return text.replace(/`/g, "`" + String.fromCharCode(8302)).replace(/@/g, "@" + String.fromCharCode(8203))
