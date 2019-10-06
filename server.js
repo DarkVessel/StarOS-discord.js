@@ -174,20 +174,6 @@ bot.on("ready", async () => {
       "Высокая.",
       "Очень высокая."
     ];
-    await MongoDB.open();
-    new Promise(async resolve => {
-      await MongoDB.bot._toCollection();
-      let res = MongoDB.bot.findOne({ id: 1 });
-      let fsd = parseInt(Date.now() + 60 * 1000);
-      if (res.TimeStatus == undefined) {
-        MongoDB.bot.insertOne({
-          id: 1,
-          TimeStatus: fsd
-        });
-        return;
-      }
-      if (Date.now() >= res.TimeStatus) {
-        await MongoDB.bot.updateOne({ id: 1 }, { TimeStatus: fsd });
         let Status = [
           ",-,",
           ",_,",
@@ -310,10 +296,7 @@ bot.on("ready", async () => {
           .get(ChannelStatusID)
           .fetchMessage(MessageStatusID)
           .then(m => m.edit(embed));
-      }
-      resolve();
-    }).then(() => MongoDB.close());
-  }, 5000);
+  }, 60000);
   bot.setInterval(() => {
     for (let i in mutes) {
       let time = mutes[i].time;
@@ -443,7 +426,7 @@ bot.on("message", async message => {
     message.author.id !== "344834720401719296"
   )
     return;
-  if (["617417681657659436", "617417581434765363"].includes(message.channel.id))
+  if (!["617417681657659436", "617417581434765363"].includes(message.channel.id))
     return;
   await MongoDB.open();
   new Promise(async resolve => {
