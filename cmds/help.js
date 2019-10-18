@@ -1,6 +1,5 @@
-const { Discord, RichEmbed } = require("discord.js");
+const { RichEmbed } = require("discord.js");
 const {
-  colors,
   ChannelStatusID,
   RoleLevel5ID,
   RoleLevel10ID,
@@ -449,12 +448,10 @@ module.exports.run = async (bot, message, args) => {
     message.channel.send(
       new Discord.RichEmbed()
         .setColor("RED")
-        .setAuthor(err.message)
-        .setDescription(err.stack)
-        .setFooter(err.name)
+        .addField("Произошла ошибка.", err.message)
+        .setFooter(bot.user.username, bot.user.displayAvatarURL)
         .setTimestamp()
     );
-    console.log(err.stack);
   }
 };
 module.exports.command = {

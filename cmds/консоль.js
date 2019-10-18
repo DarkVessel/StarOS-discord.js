@@ -1,8 +1,5 @@
-const Discord = require("discord.js");
-const config = require("../botconfig.json"); //Путь к файлу "botconfig.json"
-const { botOwnerID } = config;
 module.exports.run = async (bot, message, args) => {
-  if (message.author.id !== botOwnerID)
+  if (message.author.id !== config.botOwnerID)
     return message.channel.send(
       `Выполнять данную команду может только создатель бота!`
     );
