@@ -21,19 +21,14 @@ try {
     if (message.channel.type == "dm") return;
     if (message.guild.id !== serverID) return;
     if (
-      message.author.id !== "517331770656686080" &&
-      message.author.id !== "550276764463792129" &&
-      message.author.id !== "571672504721211392" &&
-      message.author.id !== "601265391519662080" &&
-      message.author.id !== "599187428145627147" &&
-      message.author.id !== "575013947258699787" &&
-      message.author.id !== "344834720401719296"
+      [
+        "621725124567236658",
+        "617417681657659436",
+        "617417581434765363"
+      ].includes(message.channel.id)
     )
       return;
-    if (
-      !["617417681657659436", "617417581434765363"].includes(message.channel.id)
-    )
-      return;
+    let addxp = Math.floor(Math.random() * 3) + 1;
     await MongoDB.levels._toCollection();
     let res = MongoDB.levels.findOne({ UserId: message.author.id });
     if (res.UserId == undefined) {
@@ -48,16 +43,39 @@ try {
     let level = res.maxs;
     let CurrentLevel = res.level;
     let CurrentXp = res.xp;
-    if (CurrentLevel >= MaxLevel) return;
-    await MongoDB.levels.updateOne(
-      { UserId: message.author.id },
-      { xp: parseInt(CurrentXp) + parseInt(4) }
-    );
+    if (CurrentLevel >= 65) return;
+    async function AddXP(Num) {
+      await MongoDB.levels.updateOne(
+        { UserId: message.author.id },
+        { xp: parseInt(CurrentXp) + parseInt(Num) }
+      );
+    }
+    if (
+      [
+        "517331770656686080",
+        "550276764463792129",
+        "571672504721211392",
+        "601265391519662080",
+        "599187428145627147",
+        "575013947258699787",
+        "344834720401719296"
+      ].includes(message.author.id)
+    )
+      AddXP(4);
+    if (
+      message.author.id !== "517331770656686080" &&
+      message.author.id !== "550276764463792129" &&
+      message.author.id !== "571672504721211392" &&
+      message.author.id !== "601265391519662080" &&
+      message.author.id !== "599187428145627147" &&
+      message.author.id !== "575013947258699787" &&
+      message.author.id !== "344834720401719296"
+    )
+      AddXP(addxp);
     if (`${CurrentLevel + 1}` >= 5) {
       let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
+      if (message.member.roles.has(roleS.id)) return;
+      message.member.addRole(roleS);
     }
     if (`${CurrentLevel + 1}` >= 10) {
       let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
@@ -103,6 +121,12 @@ try {
     }
     if (`${CurrentLevel + 1}` >= 50) {
       let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 65) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
       if (!message.member.roles.has(roleS.id)) {
         message.member.addRole(roleS);
       }
@@ -206,6 +230,9 @@ try {
           .send(`**${message.author} got ${CurrentLevel + 1} level!**`);
         return;
       }
+      bot.channels
+        .get(ChannelLevelID)
+        .send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`);
     }
   });
 } catch (err) {

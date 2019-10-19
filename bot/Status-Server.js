@@ -136,7 +136,7 @@ try {
         .get(config.ChannelStatusID)
         .fetchMessage(config.MessageStatusID)
         .then(m => m.edit(embed));
-    }, 60000);
+    }, 30000);
   });
 } catch (err) {
   console.log(err.stack);
