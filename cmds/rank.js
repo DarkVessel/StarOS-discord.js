@@ -88,7 +88,7 @@ module.exports.run = async (bot, message, args) => {
             .addField("Опыт", `${XP}/${Maxs}`, true)
             .addField("Уровень", Level, true)
             .addField(`Звание`, `<@&${ID}>`, true)
-            .setColor("RED")
+            .setColor(colors)
             .setTimestamp()
             .setFooter(`Опыта до следующего уровня: ${Maxs - XP}`)
         );
