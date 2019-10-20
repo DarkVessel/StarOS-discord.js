@@ -44,93 +44,6 @@ try {
     let CurrentLevel = res.level;
     let CurrentXp = res.xp;
     if (CurrentLevel >= 65) return;
-    async function AddXP(Num) {
-      await MongoDB.levels.updateOne(
-        { UserId: message.author.id },
-        { xp: parseInt(CurrentXp) + parseInt(Num) }
-      );
-    }
-    if (
-      [
-        "517331770656686080",
-        "550276764463792129",
-        "571672504721211392",
-        "601265391519662080",
-        "599187428145627147",
-        "575013947258699787",
-        "344834720401719296"
-      ].includes(message.author.id)
-    )
-      AddXP(4);
-    if (
-      message.author.id !== "517331770656686080" &&
-      message.author.id !== "550276764463792129" &&
-      message.author.id !== "571672504721211392" &&
-      message.author.id !== "601265391519662080" &&
-      message.author.id !== "599187428145627147" &&
-      message.author.id !== "575013947258699787" &&
-      message.author.id !== "344834720401719296"
-    )
-      AddXP(addxp);
-    if (`${CurrentLevel + 1}` >= 5) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
-      if (message.member.roles.has(roleS.id)) return;
-      message.member.addRole(roleS);
-    }
-    if (`${CurrentLevel + 1}` >= 10) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 15) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 20) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 25) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 30) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 35) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 40) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 50) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 65) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
     if (CurrentXp >= level) {
       await MongoDB.levels.updateOne(
         { UserId: message.author.id },
@@ -233,6 +146,94 @@ try {
       bot.channels
         .get(ChannelLevelID)
         .send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`);
+      return
+    }
+    async function AddXP(Num) {
+      await MongoDB.levels.updateOne(
+        { UserId: message.author.id },
+        { xp: parseInt(CurrentXp) + parseInt(Num) }
+      );
+    }
+    if (
+      [
+        "517331770656686080",
+        "550276764463792129",
+        "571672504721211392",
+        "601265391519662080",
+        "599187428145627147",
+        "575013947258699787",
+        "344834720401719296"
+      ].includes(message.author.id)
+    )
+      AddXP(4);
+    if (
+      message.author.id !== "517331770656686080" &&
+      message.author.id !== "550276764463792129" &&
+      message.author.id !== "571672504721211392" &&
+      message.author.id !== "601265391519662080" &&
+      message.author.id !== "599187428145627147" &&
+      message.author.id !== "575013947258699787" &&
+      message.author.id !== "344834720401719296"
+    )
+      AddXP(addxp);
+    if (`${CurrentLevel + 1}` >= 5) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
+      if (message.member.roles.has(roleS.id)) return;
+      message.member.addRole(roleS);
+    }
+    if (`${CurrentLevel + 1}` >= 10) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 15) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 20) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 25) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 30) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 35) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 40) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 50) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
+    }
+    if (`${CurrentLevel + 1}` >= 65) {
+      let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
+      if (!message.member.roles.has(roleS.id)) {
+        message.member.addRole(roleS);
+      }
     }
   });
 } catch (err) {
