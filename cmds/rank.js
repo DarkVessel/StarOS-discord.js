@@ -93,19 +93,9 @@ module.exports.run = async (bot, message, args) => {
             .setFooter(`Опыта до следующего уровня: ${Maxs - XP}`)
         );
       }
-      if (results[0] == undefined) return Rank(0, 700, 0, RoleLevel65ID);
-      if (rUser.roles.has(RoleLevel50ID)) return Rank(0, 700, 0, RoleLevel50ID);
-      if (rUser.roles.has(RoleLevel40ID)) return Rank(0, 700, 0, RoleLevel40ID);
-      if (rUser.roles.has(RoleLevel35ID)) return Rank(0, 700, 0, RoleLevel35ID);
-      if (rUser.roles.has(RoleLevel30ID)) return Rank(0, 700, 0, RoleLevel30ID);
-      if (rUser.roles.has(RoleLevel25ID)) return Rank(0, 700, 0, RoleLevel25ID);
-      if (rUser.roles.has(RoleLevel20ID)) return Rank(0, 700, 0, RoleLevel20ID);
-      if (rUser.roles.has(RoleLevel15ID)) return Rank(0, 700, 0, RoleLevel15ID);
-      if (rUser.roles.has(RoleLevel10ID)) return Rank(0, 700, 0, RoleLevel10ID);
-      if (rUser.roles.has(RoleLevel5ID)) return Rank(0, 700, 0, RoleLevel5ID);
-      let level = results[0].maxs;
-      let CurrentLevel = results[0].level;
-      let CurrentXp = results[0].xp;
+      let level = results[0] == undefined ? 700 : results[0].maxs;
+      let CurrentLevel = results[0] == undefined ? 0 : results[0].level;
+      let CurrentXp = results[0] == undefined ? 0 : results[0].xp;
       if (rUser.roles.has(RoleLevel65ID))
         return Rank(CurrentXp, level, CurrentLevel, RoleLevel65ID);
       if (rUser.roles.has(RoleLevel50ID))
