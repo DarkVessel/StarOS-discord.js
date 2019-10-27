@@ -49,6 +49,27 @@ try {
         { UserId: message.author.id },
         { level: parseInt(CurrentLevel) + parseInt(1), xp: 0 }
       );
+      let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
+      let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
+      let languageУК = message.guild.roles.find(r => r.id === RoleУкID);
+      if (message.member.roles.has(RoleУкID.id)) {
+        bot.channels
+          .get(ChannelLevelID)
+          .send(`**${message.author} отримав ${CurrentLevel + 1} рівень!**`);
+        return;
+      }
+      if (message.member.roles.has(languageRU.id)) {
+        bot.channels
+          .get(ChannelLevelID)
+          .send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`);
+        return;
+      }
+      if (message.member.roles.has(languageEN.id)) {
+        bot.channels
+          .get(ChannelLevelID)
+          .send(`**${message.author} got ${CurrentLevel + 1} level!**`);
+        return;
+      }
       if (CurrentLevel >= 25) {
         if (level === 900) return;
         await MongoDB.levels.updateOne(
@@ -122,31 +143,7 @@ try {
           message.member.addRole(roleS);
         }
       }
-      let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
-      let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
-      let languageУК = message.guild.roles.find(r => r.id === RoleУкID);
-      if (message.member.roles.has(RoleУкID.id)) {
-        bot.channels
-          .get(ChannelLevelID)
-          .send(`**${message.author} отримав ${CurrentLevel + 1} рівень!**`);
-        return;
-      }
-      if (message.member.roles.has(languageRU.id)) {
-        bot.channels
-          .get(ChannelLevelID)
-          .send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`);
-        return;
-      }
-      if (message.member.roles.has(languageEN.id)) {
-        bot.channels
-          .get(ChannelLevelID)
-          .send(`**${message.author} got ${CurrentLevel + 1} level!**`);
-        return;
-      }
-      bot.channels
-        .get(ChannelLevelID)
-        .send(`**${message.author} получил ${CurrentLevel + 1} уровень!**`);
-      return
+      return;
     }
     async function AddXP(Num) {
       await MongoDB.levels.updateOne(

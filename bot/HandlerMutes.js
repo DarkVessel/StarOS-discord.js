@@ -10,7 +10,7 @@ try {
           let userid = e.UserId;
           let guild = bot.guilds.get(guildid);
           let member = guild.members.get(userid);
-          let muteRole = member.guild.roles.find(
+          let muteRole = bot.guilds.get(guildid).roles.find(
             r => r.name === config.MuteRoleName
           );
           if (!muteRole) return;
