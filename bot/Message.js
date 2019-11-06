@@ -1,7 +1,7 @@
 try {
   bot.on("message", async message => {
     if (message.channel.type == "dm") return;
-    if (message.guild.id != serverID) return
+    if (message.guild.id != serverID) return;
     await MongoDB.message._toCollection();
     let res = MongoDB.message.findOne({ GuildId: message.guild.id });
     if (res.GuildId == undefined) {

@@ -13,6 +13,10 @@ const {
 } = config;
 module.exports.run = async (bot, message, args) => {
   try {
+    await MongoDB.config._toCollection();
+    let resConfig = MongoDB.config.findOne({ GuildId: message.guild.id });
+    if (resConfig.Rank == false)
+      return message.channel.send("**🛠 Функция рангов отключена! 🛠**");
     const member = message.guild.member(
       message.mentions.users.first() ||
         message.guild.members.get(args[0]) ||
@@ -72,11 +76,29 @@ module.exports.run = async (bot, message, args) => {
       "(ﾉ◕ヮ◕)ﾉ:･ﾟ✧",
       " (^-^) /",
       "ᕦ(òóˇ)ᕤ",
-      "У нас нет уровней"
+      "Низя!",
+      "Ты Китикет?",
+      "Я люблю Китикет!",
+      "Шо?",
+      "!",
+      "Я забаню Кролега.",
+      '" "',
+      "Wo",
+      "ААА",
+      "В чём секрет кота Бориса?",
+      "Ну ну.",
+      "Kavo",
+      "Всё ясно это ловушка.",
+      "Sorry.",
+      "RANDOOOOOOOOOOOOOM"
     ];
+    await MongoDB.config._toCollection();
+    let res = MongoDB.config.findOne({ GuildId: message.guild.id });
     let random = Math.floor(Math.random() * Message.length);
     if (rUser.user.bot) {
-      message.channel.send(Message[random]);
+      message.channel.send(
+        res.UU == false ? "У ботов нет уровней." : Message[random]
+      );
       return;
     }
     const collection = db.collection("levels");
@@ -121,7 +143,11 @@ module.exports.run = async (bot, message, args) => {
           .setAuthor(member.user.username, member.user.avatarURL)
           .addField("Опыт", `${CurrentXp}/${level}`, true)
           .addField("Уровень", CurrentLevel, true)
-          .addField(`Звание`, `Отсутствует.`, true)
+          .addField(
+            `Звание`,
+            `Отсутствует. ${res.UU == true ? "D:" : ""}`,
+            true
+          )
           .setColor(colors)
           .setTimestamp()
           .setFooter(`Опыта до следующего уровня: ${level - CurrentXp}`)

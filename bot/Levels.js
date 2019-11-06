@@ -1,22 +1,8 @@
 try {
-  const {
-    RoleRuID,
-    RoleEnID,
-    MaxLevel,
-    ChannelLevelID,
-    RoleLevel5ID,
-    RoleLevel10ID,
-    RoleLevel15ID,
-    RoleLevel20ID,
-    RoleLevel25ID,
-    RoleLevel30ID,
-    RoleLevel35ID,
-    RoleLevel40ID,
-    RoleLevel50ID,
-    RoleLevel65ID,
-    RoleУкID
-  } = config;
+  const { RoleRuID, RoleEnID, MaxLevel, ChannelLevelID, RoleУкID } = config;
   bot.on("message", async message => {
+    let resConfig = MongoDB.config.findOne({ GuildId: message.guild.id });
+    if (resConfig.Rank == false) return;
     if (message.author.bot) return;
     if (message.channel.type == "dm") return;
     if (message.guild.id !== serverID) return;
@@ -52,7 +38,7 @@ try {
       let languageRU = message.guild.roles.find(r => r.id === RoleRuID);
       let languageEN = message.guild.roles.find(r => r.id === RoleEnID);
       let languageУК = message.guild.roles.find(r => r.id === RoleУкID);
-      if (message.member.roles.has(RoleУкID.id)) {
+      if (message.member.roles.has(languageУК.id)) {
         bot.channels
           .get(ChannelLevelID)
           .send(`**${message.author} отримав ${CurrentLevel + 1} рівень!**`);
@@ -84,65 +70,6 @@ try {
           { maxs: 1250 }
         );
       }
-      if (`${CurrentLevel + 1}` >= 5) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
-        if (message.member.roles.has(roleS.id)) return;
-        message.member.addRole(roleS);
-      }
-      if (`${CurrentLevel + 1}` >= 10) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 15) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 20) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 25) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 30) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 35) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 40) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 50) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
-      if (`${CurrentLevel + 1}` >= 65) {
-        let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
-        if (!message.member.roles.has(roleS.id)) {
-          message.member.addRole(roleS);
-        }
-      }
       return;
     }
     async function AddXP(Num) {
@@ -173,65 +100,6 @@ try {
       message.author.id !== "344834720401719296"
     )
       AddXP(addxp);
-    if (`${CurrentLevel + 1}` >= 5) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel5ID);
-      if (message.member.roles.has(roleS.id)) return;
-      message.member.addRole(roleS);
-    }
-    if (`${CurrentLevel + 1}` >= 10) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel10ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 15) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel15ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 20) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel20ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 25) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel25ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 30) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel30ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 35) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel35ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 40) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel40ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 50) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel50ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
-    if (`${CurrentLevel + 1}` >= 65) {
-      let roleS = message.guild.roles.find(r => r.id === RoleLevel65ID);
-      if (!message.member.roles.has(roleS.id)) {
-        message.member.addRole(roleS);
-      }
-    }
   });
 } catch (err) {
   console.log(err.stack);

@@ -1,70 +1,28 @@
 try {
   bot.on("guildMemberAdd", async member => {
-    //При входе участника на сервер.
-    member
-      .send(
-        "Нажмите ❤ если вы Русский.\nPress 💛 if you are English.\nНатисніть 💚 якщо ви Українець."
-      )
-      .then(msg => {
-        //Ставим реакции на это сообщение.
-        msg.react("❤").then(r => {
-          msg.react("💛");
-          msg.react("💚");
-          const a = (reaction, user) =>
-            reaction.emoji.name === "❤" && user.id === member.id;
-          const b = (reaction, user) =>
-            reaction.emoji.name === "💛" && user.id === member.id;
-          const g = (reaction, user) =>
-            reaction.emoji.name === "💚" && user.id === member.id;
-          const d = msg.createReactionCollector(a); //Создаём коллектор.
-          const z = msg.createReactionCollector(b);
-          const l = msg.createReactionCollector(g);
-          d.on("collect", r => {
-            bot.channels
-              .get(config.ChannelWelcomeID)
-              .send(`${member} Пришёл 😃`);
-            let roleS = member.guild.roles.find(r => r.id === config.RoleRuID);
-            if (!member.roles.has(roleS.id)) {
-              member.addRole(roleS);
-            }
-            msg.edit("❤ | Вы успешно указали свой язык!").then(msg => {
-              msg.reactions.forEach(e => e.remove(bot.user.id));
-              d.stop();
-              z.stop(); //Останавливаем коллекторы.
-            });
-          });
-          z.on("collect", r => {
-            bot.channels
-              .get(config.ChannelWelcomeID)
-              .send(`${member} Has come 😃`);
-            let roleS = member.guild.roles.find(r => r.id === config.RoleEnID);
-            if (!member.roles.has(roleS.id)) {
-              member.addRole(roleS); //Выдаём роль.
-            }
-            msg
-              .edit("💛 | You have successfully entered your language!")
-              .then(msg => {
-                msg.reactions.forEach(e => e.remove(bot.user.id)); //Убираем реакции у бота.
-                d.stop();
-                z.stop();
-              });
-          });
-          l.on("collect", r => {
-            bot.channels
-              .get(config.ChannelWelcomeID)
-              .send(`${member} Прийшов 😃`);
-            let roleS = member.guild.roles.find(r => r.id === config.RoleУкID);
-            if (!member.roles.has(roleS.id)) {
-              member.addRole(roleS); //Выдаём роль.
-            }
-            msg.edit(`💚 | Ви успішно вказали свою мову!`).then(msg => {
-              msg.reactions.forEach(e => e.remove(bot.user.id)); //Убираем реакции у бота.
-              d.stop();
-              z.stop();
-            });
-          });
-        });
-      });
+    await MongoDB.config._toCollection();
+    let res = MongoDB.config.findOne({ GuildId: member.guild.id });
+    if(res.UU == false) return bot.channels.get(config.ChannelWelcomeID).send(`${member} Зашёл на сервер.`)
+    let Message = [
+      `${member} Пришёл 😃`,
+      `${member} Пришёл :0`,
+      `${member} Пришёл :>`,
+      `${member} Пришёл :)`,
+      `${member} Пришёл, подержите его пиво.`,
+      `${member} Приехал.`,
+      `${member} Оставь своё оружие у двери`,
+      `Опа, а вот и ${member}.`,
+      `Привет, ${member}, прочитай правила или съем!`,
+      `${member} Добро пожаловать.`,
+      `${member} Пришёль 😃`,
+      `Привет, ${member}, ты принёс хлебушек?`,
+      `${member} Приземляется на сервер :0`,
+      `${member} уже здесь.`,
+      `${member} присоединяется...наверное.`,
+      `А вот и ${member} пришёл.`
+    ];
+    let random = Math.floor(Math.random() * Message.length);
+    bot.channels.get(config.ChannelWelcomeID).send(Message[random]);
   });
 } catch (err) {
   console.log(err.stack);
