@@ -1,5 +1,5 @@
 try {
-  const { RichEmbed } = require("discord.js")
+  const { RichEmbed } = require("discord.js");
   var os = require("os");
   bot.on("ready", async () => {
     bot.setInterval(async () => {

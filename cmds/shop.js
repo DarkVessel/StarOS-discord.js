@@ -14,6 +14,8 @@ const {
 module.exports.run = async (bot, message, args) => {
   await MongoDB.coins._toCollection();
   let res = MongoDB.coins.findOne({ UserId: message.author.id });
+  await MongoDB.levels._toCollection();
+  let resLevel = MongoDB.levels.findOne({ UserId: message.author.id });
   let embed = new RichEmbed()
     .setColor("RED")
     .setFooter(message.author.username, message.author.displayAvatarURL)
@@ -51,77 +53,53 @@ module.exports.run = async (bot, message, args) => {
     );
     message.member.addRole(ID);
   }
-  if (args1.some(a => Старейшина.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel5ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (3000 > res.coins) return No(3000);
-    Yes(3000, roleS);
-    return;
+  function NoLevel(Level) {
+    message.channel.send(
+      new RichEmbed()
+        .setColor("RED")
+        .setTimestamp()
+        .setFooter(
+          `Сколько осталось уровней для покупки: ${Level - resLevel.level}`
+        )
+        .setDescription(`У вас недостаточный уровень для покупки этой роли.`)
+    );
   }
+  function Code(RoleID, money, Level) {
+    let roleS = message.guild.roles.find(r => r.id == RoleID);
+    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
+    if (Level > resLevel.level) return NoLevel(Level);
+    if (money > res.coins) return No(money);
+    Yes(money, roleS);
+  }
+  if (args1.some(a => Старейшина.find(word => word == a)))
+    return Code(RoleLevel5ID, 3000, 5);
   let Защитник = ["защитник", "@защитник", RoleLevel10ID];
-  if (args1.some(a => Защитник.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel10ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (5000 > res.coins) return No(5000);
-    Yes(3000, roleS);
-    return;
-  }
+  if (args1.some(a => Защитник.find(word => word == a)))
+    return Code(RoleLevel10ID, 5000, 10);
   let Капитан = ["капитан", "@капитан", RoleLevel15ID];
-  if (args1.some(a => Капитан.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel15ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (10000 > res.coins) return No(10000);
-    Yes(10000, roleS);
-    return;
-  }
+  if (args1.some(a => Капитан.find(word => word == a)))
+    return Code(RoleLevel15ID, 10000, 15);
   let Коллекционер = ["коллекционер", "@коллекционер", RoleLevel20ID];
-  if (args1.some(a => Коллекционер.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel20ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (13000 > res.coins) return No(13000);
-    Yes(13000, roleS);
-    return;
-  }
+  if (args1.some(a => Коллекционер.find(word => word == a)))
+    return Code(RoleLevel20ID, 13000, 20);
   let Легенда = ["легенда", "@легенда", RoleLevel25ID];
-  if (args1.some(a => Легенда.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel25ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (17000 > res.coins) return No(17000);
-    Yes(17000, roleS);
-    return;
-  }
+  if (args1.some(a => Легенда.find(word => word == a)))
+    return Code(RoleLevel25ID, 17000, 25);
   let Жнец = ["жнец", "@жнец", RoleLevel30ID];
-  if (args1.some(a => Жнец.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel30ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (20000 > res.coins) return No(20000);
-    Yes(20000, roleS);
-    return;
-  }
+  if (args1.some(a => Жнец.find(word => word == a)))
+    return Code(RoleLevel30ID, 20000, 30);
   let Братан = ["братан", "@братан", RoleLevel35ID];
-  if (args1.some(a => Братан.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel35ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (24000 > res.coins) return No(24000);
-    Yes(24000, roleS);
-    return;
-  }
+  if (args1.some(a => Братан.find(word => word == a)))
+    return Code(RoleLevel35ID, 24000, 35);
   let Разрушитель = ["разрушитель", "@разрушитель", RoleLevel40ID];
-  if (args1.some(a => Разрушитель.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel40ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (26000 > res.coins) return No(26000);
-    Yes(26000, roleS);
-    return;
-  }
+  if (args1.some(a => Разрушитель.find(word => word == a)))
+    return Code(RoleLevel40ID, 26000, 40);
   let Титан = ["титан", "@титан", RoleLevel50ID];
-  if (args1.some(a => Титан.find(word => word == a))) {
-    let roleS = message.guild.roles.find(r => r.id == RoleLevel50ID);
-    if (message.member.roles.has(roleS.id)) return message.channel.send(embed2);
-    if (35000 > res.coins) return No(35000);
-    Yes(35000, roleS);
-    return;
-  }
+  if (args1.some(a => Титан.find(word => word == a)))
+    return Code(RoleLevel50ID, 35000, 50);
+  let Повелитель = ["повелитель", "@повелитель", RoleLevel65ID];
+  if (args1.some(a => Повелитель.find(word => word == a)))
+    return Code(RoleLevel65ID, 40000, 65);
   if (!args[0])
     return message.channel.send(
       new RichEmbed()
@@ -138,6 +116,7 @@ module.exports.run = async (bot, message, args) => {
         .addField(`24000 OScoins`, `<@&${RoleLevel35ID}>`, true)
         .addField(`26000 OScoins`, `<@&${RoleLevel40ID}>`, true)
         .addField(`35000 OScoins`, `<@&${RoleLevel50ID}>`, true)
+        .addField(`40000 OScoins`, `<@&${RoleLevel65ID}>`, true)
     );
   message.channel.send(
     new RichEmbed()

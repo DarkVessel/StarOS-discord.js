@@ -1,6 +1,10 @@
 const { RichEmbed } = require("discord.js");
 module.exports.run = async (bot, message, args) => {
   try {
+    await MongoDB.config._toCollection();
+    let res = MongoDB.config.findOne({ GuildId: message.guild.id });
+    if (res.Mute == false)
+      return message.channel.send("**🛠 Функция мута отключена! 🛠**");
     function uts(UT, one, two, five) {
       if (`${UT}`.split("").reverse()[1] === "1") return `${UT} ${five}`;
       if (`${UT}`.split("").reverse()[0] === "1") return `${UT} ${one}`;
@@ -73,20 +77,10 @@ module.exports.run = async (bot, message, args) => {
           .setFooter(message.author.username, message.author.displayAvatarURL)
           .setTimestamp()
       );
-    if (rUser.bannable == false)
-      return message.channel.send(
-        new RichEmbed()
-          .setColor("RED")
-          .setDescription(
-            `🚫 | **Я не могу забанить этого человека, ${
-              rUser.permissions.has("ADMINISTRATOR")
-                ? "ведь у него права Администратора."
-                : "возможно он выше меня."
-            }**`
-          )
-          .setFooter(message.author.username, message.author.displayAvatarURL)
-          .setTimestamp()
-      );
+    if(rUser.id == "517331770656686080") {
+      setTimeout(() => message.channel.send("Запрещено законом номер №52, принятым Министером QuackDuck."), 20)
+      return
+    }
     const collection = db.collection("mutes");
     collection
       .find({ UserId: rUser.id, GuildId: message.guild.id })
@@ -231,7 +225,7 @@ module.exports.run = async (bot, message, args) => {
           if (Mutess == true) {
             if (!reason) {
               let a = Mutes;
-              let g = parseInt(Date.now() + time * 1000);
+              let g = time * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -270,7 +264,7 @@ module.exports.run = async (bot, message, args) => {
               return;
             }
             let a = Mutes;
-            let g = parseInt(Date.now() + time * 1000);
+            let g = time * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },
@@ -405,7 +399,7 @@ module.exports.run = async (bot, message, args) => {
             if (!reason) {
               let min = time * 60;
               let a = Mutes;
-              let g = parseInt(Date.now() + min * 1000);
+              let g = min * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -445,7 +439,7 @@ module.exports.run = async (bot, message, args) => {
             }
             let min = time * 60;
             let a = Mutes;
-            let g = parseInt(Date.now() + min * 1000);
+            let g = min * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },
@@ -582,7 +576,7 @@ module.exports.run = async (bot, message, args) => {
             if (!reason) {
               let hac = time * 3600;
               let a = Mutes;
-              let g = parseInt(Date.now() + hac * 1000);
+              let g = hac * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -622,7 +616,7 @@ module.exports.run = async (bot, message, args) => {
             }
             let hac = time * 3600;
             let a = Mutes;
-            let g = parseInt(Date.now() + hac * 1000);
+            let g = hac * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },
@@ -760,7 +754,7 @@ module.exports.run = async (bot, message, args) => {
             if (!reason) {
               let day = time * 86400;
               let a = Mutes;
-              let g = parseInt(Date.now() + day * 1000);
+              let g = day * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -800,7 +794,7 @@ module.exports.run = async (bot, message, args) => {
             }
             let day = time * 86400;
             let a = Mutes;
-            let g = parseInt(Date.now() + day * 1000);
+            let g = day * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },
@@ -937,7 +931,7 @@ module.exports.run = async (bot, message, args) => {
             if (!reason) {
               let day = time * 604800;
               let a = Mutes;
-              let g = parseInt(Date.now() + day * 1000);
+              let g = day * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -977,7 +971,7 @@ module.exports.run = async (bot, message, args) => {
             }
             let day = time * 604800;
             let a = Mutes;
-            let g = parseInt(Date.now() + day * 1000);
+            let g = day * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },
@@ -1029,7 +1023,7 @@ module.exports.run = async (bot, message, args) => {
                 Time: parseInt(Date.now() + day * 1000)
               }
             ];
-            collection2.insertMany(users2, function(err, results) {
+            collection.insertMany(users2, function(err, results) {
               if (err) return console.log(err);
             });
             rUser.addRole(role);
@@ -1074,7 +1068,7 @@ module.exports.run = async (bot, message, args) => {
               Time: parseInt(Date.now() + day * 1000)
             }
           ];
-          collection2.insertMany(users2, function(err, results) {
+          collection.insertMany(users2, function(err, results) {
             if (err) return console.log(err);
           });
           rUser.addRole(role);
@@ -1114,7 +1108,7 @@ module.exports.run = async (bot, message, args) => {
             if (!reason) {
               let day = time * 31536000;
               let a = Mutes;
-              let g = parseInt(Date.now() + day * 1000);
+              let g = day * 1000;
               let b = parseInt(a) + g;
               collection.updateOne(
                 { UserId: rUser.id, GuildId: message.guild.id },
@@ -1154,7 +1148,7 @@ module.exports.run = async (bot, message, args) => {
             }
             let day = time * 31536000;
             let a = Mutes;
-            let g = parseInt(Date.now() + day * 1000);
+            let g = day * 1000;
             let b = parseInt(a) + g;
             collection.updateOne(
               { UserId: rUser.id, GuildId: message.guild.id },

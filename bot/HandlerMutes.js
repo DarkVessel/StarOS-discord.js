@@ -1,5 +1,8 @@
 try {
   bot.on("ready", async () => {
+    await MongoDB.config._toCollection();
+    let res = MongoDB.config.findOne({ GuildId: config.serverID });
+    if (res.Mute == false) return;
     bot.setInterval(() => {
       const collection = db.collection("mutes");
       collection.find().toArray(function(err, results) {
@@ -10,10 +13,12 @@ try {
           let userid = e.UserId;
           let guild = bot.guilds.get(guildid);
           let member = guild.members.get(userid);
-          let muteRole = member.guild.roles.find(
-            r => r.name === config.MuteRoleName
-          );
+          let muteRole = bot.guilds
+            .get(guildid)
+            .roles.find(r => r.name === config.MuteRoleName);
           if (!muteRole) return;
+          if (!guild) return;
+          if (!member) return;
           if (Date.now() >= time) {
             member.removeRole(muteRole);
             db.collection("mutes").deleteOne(

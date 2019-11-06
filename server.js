@@ -27,8 +27,8 @@ global.serverID = config.serverID;
 global.colors = config.colors;
 global.commands = new Map();
 global.DefaultPrefix = config.DefaultPrefix;
-global.ChannelLevelID = config.ChannelLevelID
-global.strftime = require("strftime")
+global.ChannelLevelID = config.ChannelLevelID;
+global.strftime = require("strftime");
 const BotData = {
   id: { type: Mongo.Types.Number, default: undefined },
   TimeStatus: { type: Mongo.Types.String, default: undefined }
@@ -44,13 +44,23 @@ global.MongoDB.addModel("levels", LevelData);
 const MessageData = {
   GuildId: { type: Mongo.Types.String, default: undefined },
   message: { type: Mongo.Types.Number, default: 0 }
-}
-global.MongoDB.addModel("message", MessageData)
+};
+global.MongoDB.addModel("message", MessageData);
 const CoinsData = {
   UserId: { type: Mongo.Types.String, default: undefined },
   coins: { type: Mongo.Types.Number, default: 0 }
 };
 global.MongoDB.addModel("coins", CoinsData);
+const ConfigData = {
+  GuildId: { type: Mongo.Types.String, default: undefined },
+  Rank: { type: Mongo.Types.Boolean, default: true },
+  StatusBot: { type: Mongo.Types.Boolean, default: true },
+  Mute: { type: Mongo.Types.Boolean, default: true },
+  Commands: { type: Mongo.Types.Boolean, default: true },
+  Reaction: { type: Mongo.Types.Boolean, default: true },
+  UU: { type: Mongo.Types.Boolean, default: true }
+};
+global.MongoDB.addModel("config", ConfigData);
 try {
   require("fs")
     .readdirSync("./bot/")

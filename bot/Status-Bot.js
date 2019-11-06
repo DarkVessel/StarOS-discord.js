@@ -1,5 +1,8 @@
 try {
   bot.on("ready", async () => {
+    await MongoDB.config._toCollection();
+    let res = MongoDB.config.findOne({ GuildId: config.serverID });
+    if (res.StatusBot == false) return;
     bot.setInterval(async () => {
       let Status = [
         ",-,",
@@ -22,7 +25,6 @@ try {
         "(° ͜ʖ °)",
         "( ‾ʖ̫‾)",
         "( ಠ ͜ʖ ಠ)",
-        "凸༼ຈل͜ຈ༽凸",
         "(ᗒᗣᗕ)՞",
         "( ͡° ʖ̯ ͡°)",
         "( ͡ಥ ͜ʖ ͡ಥ)",
@@ -56,7 +58,8 @@ try {
         "ботов",
         "шо",
         "/help",
-        "жорика"
+        "жорика",
+        "кролега"
       ];
       let random = Math.floor(Math.random() * Status.length);
       let random2 = Math.floor(Math.random() * 4);
