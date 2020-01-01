@@ -3,6 +3,7 @@ try{
     let roleCreator = message.guild.roles.find(
       r => r.id === "603629611452203058"
     );
+    let roleIvent = message.guild.roles.find(r => r.id === "620338373822775296")
     await MongoDB.config._toCollection();
     let res = MongoDB.config.findOne({ GuildId: message.guild.id });
     let Message2 = [
@@ -67,8 +68,8 @@ try{
       "Зачем тебе деньги? Это же просто циферки."
     ]
     let random2 = Math.floor(Math.random() * Message2.length)
-    if (!message.member.roles.has(roleCreator.id)) return message.channel.send((res.UU == false) ? "У вас недостаточно прав для выполнения этой команды." : Message2[random2])
-    const member = message.guild.member(
+    async function code() {
+      const member = message.guild.member(
       message.mentions.users.first() ||
         message.guild.members.get(args[0])
     );
@@ -187,6 +188,10 @@ try{
           { coins: parseInt(res2.coins) + parseInt(args[1]) }
         );
     }
+    }
+    if (message.member.roles.has(roleCreator.id)) return code()
+    if (message.member.roles.has(roleIvent.id)) return code()
+    message.channel.send((res.UU == false) ? "У вас недостаточно прав для выполнения этой команды." : Message2[random2])
   }
   module.exports.command = {
     name: "give"
